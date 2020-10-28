@@ -1,3 +1,9 @@
+# Actividad 3 - Juego de Pacman.
+# Autores: Leonardo Delgado Rios-A00827915, Saul Jimenez Torres-A01283849.
+# Aplicacion que desarrolla el minijuego de Pacman 
+# Fecha de ultima modificacion: 10/28/2020.
+# Se importan las librerias que se utilizaran para el correcto desarrollo de
+# la aplicación.
 from random import choice
 from turtle import *
 from freegames import floor, vector
@@ -13,6 +19,8 @@ ghosts = [
     [vector(100, 160), vector(0, -5)],
     [vector(100, -160), vector(-5, 0)],
 ]
+
+# Esta matriz nos muestra en que posicion del tablero el jugador y los fantasmas se podran mover.
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
@@ -36,6 +44,7 @@ tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
 
+# Funcion que
 def square(x, y):
     "Draw square using path at (x, y)."
     path.up()
@@ -48,7 +57,8 @@ def square(x, y):
         path.left(90)
 
     path.end_fill()
-
+    
+# Funcion que
 def offset(point):
     "Return offset of point in tiles."
     x = (floor(point.x, 20) + 200) / 20
@@ -56,6 +66,7 @@ def offset(point):
     index = int(x + y * 20)
     return index
 
+# Funcion que
 def valid(point):
     "Return True if point is valid in tiles."
     index = offset(point)
@@ -70,6 +81,8 @@ def valid(point):
 
     return point.x % 20 == 0 or point.y % 20 == 0
 
+# Funcion que rellena los recuadros del tablero con su color correspondiente,
+# esto depende del valor que se tenga en la matriz.
 def world():
     "Draw world using path."
     bgcolor('black')
@@ -87,7 +100,10 @@ def world():
                 path.up()
                 path.goto(x + 10, y + 10)
                 path.dot(2, 'white')
-
+                
+# Funcion move, menciona los posibles escenarios del Pacman y los fantasmas,
+#  tambien se tienen cambios de direccion, el movimiento del Pacman y Fantasmas,
+# junto con las opciones posibles a las que el fantasma se pueda mover.
 def move():
     "Move pacman and all ghosts."
     writer.undo()
@@ -137,12 +153,18 @@ def move():
 
     ontimer(move, 100)
 
+# Funcion que cambia la direccion del Pacman a una direccion valida.
 def change(x, y):
     "Change pacman aim if valid."
     if valid(pacman + vector(x, y)):
         aim.x = x
         aim.y = y
-
+        
+# Aqui se definen los valores default que se utilizan con cada ejecucion
+# del programa. Estos son el tamaño de ventana, el contador de puntaje junto
+# con el color que tomara. Al presionar la tecla respectiva se cambia la direccion
+# del Pacman.
+ 
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
