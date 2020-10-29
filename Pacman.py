@@ -141,7 +141,6 @@ def move():
             if valid(point + aux) and i%2==0 :
                 course.x = aux.x
                 course.y = aux.y
-                i+=1
             point.move(course)
             i+=1
         else:
