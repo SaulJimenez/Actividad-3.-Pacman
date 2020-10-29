@@ -1,50 +1,53 @@
 # Actividad 3 - Juego de Pacman.
 # Autores: Leonardo Delgado Rios-A00827915, Saul Jimenez Torres-A01283849.
 # Aplicacion que desarrolla el minijuego de Pacman 
-# Fecha de ultima modificacion: 10/28/2020.
+# Fecha de ultima modificacion: 10/29/2020.
 # Se importan las librerias que se utilizaran para el correcto desarrollo de
 # la aplicación.
 from random import choice
 from turtle import *
 from freegames import floor, vector
 
+# Aqui se definen lo valores default, es decir, el score y las posiciones de
+# los fantasmas al igual que la del pacman
 state = {'score': 0}
 path = Turtle(visible=False)
 writer = Turtle(visible=False)
 aim = vector(5, 0)
-pacman = vector(-40, -80)
+pacman = vector(-40, -40)
 ghosts = [
     [vector(-180, 160), vector(5, 0)],
-    [vector(-180, -160), vector(0, 5)],
+    [vector(-180, -180), vector(0, 5)],
     [vector(100, 160), vector(0, -5)],
-    [vector(100, -160), vector(-5, 0)],
+    [vector(120, -180), vector(-5, 0)],
 ]
-
-# Esta matriz nos muestra en que posicion del tablero el jugador y los fantasmas se podran mover.
+# Esta matriz muestra en que posicion del tablero el jugador y los fantasmas
+# se podran mover, o bien, el script ddel entorno onde se desarrolla el juego.
 tiles = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0,
-    0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+    0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0,
+    0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
+    0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0,
+    0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0,
+    0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ]
 
-# Funcion que
+# Funcion square, su objetivo es pintar un cuadrado que sirve como base para
+# desarrollar el tablero del juego.
 def square(x, y):
     "Draw square using path at (x, y)."
     path.up()
@@ -58,7 +61,8 @@ def square(x, y):
 
     path.end_fill()
     
-# Funcion que
+# Funcion offset, regresa el indice donde se podra mover pacman y los fantasmas
+# es decir, establece los limites de movimiento dentro del tablero.
 def offset(point):
     "Return offset of point in tiles."
     x = (floor(point.x, 20) + 200) / 20
@@ -66,7 +70,8 @@ def offset(point):
     index = int(x + y * 20)
     return index
 
-# Funcion que
+# Funcion valid, funcion que determina si el movimiento es valido, es deir, si
+# se encuentra dentro de los limites del juego establecido.
 def valid(point):
     "Return True if point is valid in tiles."
     index = offset(point)
@@ -81,12 +86,13 @@ def valid(point):
 
     return point.x % 20 == 0 or point.y % 20 == 0
 
-# Funcion que rellena los recuadros del tablero con su color correspondiente,
-# esto depende del valor que se tenga en la matriz.
+# Funcion world, funcion que rellena los recuadros del tablero con su color
+# correspondiente, esto depende del valor que se tenga en la matriz, ademas
+# de agregar los puntos/comida para pacman.
 def world():
     "Draw world using path."
     bgcolor('black')
-    path.color('blue')
+    path.color('green')
 
     for index in range(len(tiles)):
         tile = tiles[index]
@@ -102,7 +108,7 @@ def world():
                 path.dot(2, 'white')
                 
 # Funcion move, menciona los posibles escenarios del Pacman y los fantasmas,
-#  tambien se tienen cambios de direccion, el movimiento del Pacman y Fantasmas,
+# tambien se tienen cambios de direccion, el movimiento del Pacman y Fantasmas,
 # junto con las opciones posibles a las que el fantasma se pueda mover.
 def move():
     "Move pacman and all ghosts."
@@ -132,15 +138,15 @@ def move():
             point.move(course)
         else:
             options = [
-                vector(5, 0),
-                vector(-5, 0),
-                vector(0, 5),
-                vector(0, -5),
+                vector(10, 0),
+                vector(-10, 0),
+                vector(0, 10),
+                vector(0, -10),
             ]
             plan = choice(options)
             course.x = plan.x
             course.y = plan.y
-
+        
         up()
         goto(point.x + 10, point.y + 10)
         dot(20, 'red')
@@ -160,11 +166,10 @@ def change(x, y):
         aim.x = x
         aim.y = y
         
-# Aqui se definen los valores default que se utilizan con cada ejecucion
-# del programa. Estos son el tamaño de ventana, el contador de puntaje junto
-# con el color que tomara. Al presionar la tecla respectiva se cambia la direccion
-# del Pacman.
- 
+# Aqui se definen las caracterisiticas de la ventana donde se desarrolla
+# el programa. Estos son el tamaño de ventana, el contador de puntaje junto
+# con el color que tomara. Al presionar la tecla respectiva da una instruccion
+# y se cambia la direccion del Pacman.
 setup(420, 420, 370, 0)
 hideturtle()
 tracer(False)
