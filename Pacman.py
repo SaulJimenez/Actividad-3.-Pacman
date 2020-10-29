@@ -15,11 +15,12 @@ path = Turtle(visible=False)
 writer = Turtle(visible=False)
 aim = vector(5, 0)
 pacman = vector(-40, -40)
+coursetmp = [vector(10,0),vector(0,10),vector(0,-10),vector(-10,0)]
 ghosts = [
-    [vector(-180, 160), vector(5, 0)],
-    [vector(-180, -180), vector(0, 5)],
-    [vector(100, 160), vector(0, -5)],
-    [vector(120, -180), vector(-5, 0)],
+    [vector(-180, 160), vector(10, 0)],
+    [vector(-180, -180), vector(10, 0)],
+    [vector(100, 60), vector(0, 10)],
+    [vector(120, -180), vector(0, 10)],
 ]
 # Esta matriz muestra en que posicion del tablero el jugador y los fantasmas
 # se podran mover, o bien, el script ddel entorno onde se desarrolla el juego.
@@ -114,6 +115,7 @@ def move():
     "Move pacman and all ghosts."
     writer.undo()
     writer.write(state['score'])
+    i = 0
 
     clear()
 
@@ -132,21 +134,20 @@ def move():
     up()
     goto(pacman.x + 10, pacman.y + 10)
     dot(20, 'yellow')
-
+    
     for point, course in ghosts:
+        aux = choice(coursetmp)
         if valid(point + course):
+            if valid(point + aux) and i%2==0 :
+                course.x = aux.x
+                course.y = aux.y
+                i+=1
             point.move(course)
+            i+=1
         else:
-            options = [
-                vector(10, 0),
-                vector(-10, 0),
-                vector(0, 10),
-                vector(0, -10),
-            ]
-            plan = choice(options)
-            course.x = plan.x
-            course.y = plan.y
-        
+            course.x = aux.x
+            course.y = aux.y
+            
         up()
         goto(point.x + 10, point.y + 10)
         dot(20, 'red')
